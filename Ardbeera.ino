@@ -1,11 +1,12 @@
 /**
 * @file Ardbeera.ino
 * @brief Fichier de base
-*  Cet exemple utilise le FlexTimer 0 (FTM0) pour faire clignoter une led à 1Hz
+*  Cet exemple utilise le FlexTimer 0 (FTM0) pour faire clignoter une led à 1Hz.
+*
+*  FlexTimer 0 example generating 1Hz tops using onboard led.
 *
 * @date 4 février 2013
 * @author BBenj
-*
 */
 
 #include "teensy_config.h"
@@ -23,6 +24,9 @@ uint8_t state = 0;
  * ********************************************************************************* */
 
 /// @brief Setup function, used to initialize the board
+/// Set Serial up at 115200 bds
+/// Set onboard led pin as output
+/// Initialize FlexTimer 0 to generate 2Hz IRQ
 ///
 void setup()
 {
@@ -83,6 +87,7 @@ void loop()
  * ********************************************************************************* */
 
 /// @brief FTM0 Overflow ISR handler
+/// Toggle onboard led to generate 1Hz tops
 ///
 ISR(ftm0_isr)
 {
