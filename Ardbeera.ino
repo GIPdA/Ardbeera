@@ -1,3 +1,12 @@
+/**
+* @file Ardbeera.ino
+* @brief Fichier de base
+*  Cet exemple utilise le FlexTimer 0 (FTM0) pour faire clignoter une led à 1Hz
+*
+* @date 4 février 2013
+* @author BBenj
+*
+*/
 
 #include "teensy_config.h"
 
@@ -6,7 +15,7 @@
  *			Global variables
  * ********************************************************************************* */
 
-uint8_t state = 0, cnt = 0;
+uint8_t state = 0;
 
 
 /* ********************************************************************************* *
@@ -45,6 +54,10 @@ void setup()
           | FTM_SC_CLKS(0b01)  // Clock source (System clock)
           | FTM_SC_PS(0b111);  // Prescaler (1:128)
   
+  // The TOF bit is set for the first counter overflow but not for the next 2 overflows.
+  // => Divide by 3 ==> IRQ freq = 2Hz
+  FTM0_CONF = 0x02;	// 1:3 TOF IRQ
+
   // Enable FTM0 IRQ
   NVIC_ENABLE_IRQ(IRQ_FTM0);
   
@@ -75,9 +88,8 @@ ISR(ftm0_isr)
 {
   FTM0_SC &= ~FTM_SC_TOF;	// Clear TOF flag
 
-  // Divide by 3 to get 1Hz blinking
-  if((cnt++ % 3) == 0)	// Glitch at overflow, but we don't care :p
-    digitalWrite(ONBOARD_LED, state ^= HIGH);
+  // Toggle onboard led => Blinking freq = 1Hz
+  digitalWrite(ONBOARD_LED, state ^= HIGH);
 }
 
 
